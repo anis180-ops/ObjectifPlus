@@ -18,7 +18,7 @@ function GoalForm() {
     <section className='form'>
       <form onSubmit={onSubmit}>
         <div className='form-group'>
-          <label htmlFor='text'>Objectif</label>
+          <label htmlFor='text'> tes Objectif</label>
           <input
             type='text'
             name='text'
@@ -29,7 +29,7 @@ function GoalForm() {
         </div>
         <div className='form-group'>
           <button className='btn btn-block' type='submit'>
-            Ajouter un objectif
+            zid un objectif
           </button>
         </div>
       </form>

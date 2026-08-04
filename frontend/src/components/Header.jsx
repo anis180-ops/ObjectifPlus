@@ -18,6 +18,9 @@ function Header() {
     <header className='header'>
       <div className='logo'>
         <Link to='/'>ObjectifPlus</Link>
+        <span style={{ fontSize: '0.7rem', opacity: 0.6, marginLeft: '8px' }}>
+          v{process.env.REACT_APP_VERSION || 'dev'}
+        </span>
       </div>
       <ul>
         {user ? (
