@@ -61,7 +61,7 @@ function Login() {
         <h1>
           <FaSignInAlt /> Connexion
         </h1>
-        <p>Connectez-vous pour commencer à définir vos objectifs</p>
+        <p>تواصل معنا لتبدأ في تحديد أهدافك</p>
       </section>
 
       <section className='form'>

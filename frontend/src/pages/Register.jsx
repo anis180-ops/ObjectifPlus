@@ -66,9 +66,9 @@ function Register() {
     <>
       <section className='heading'>
         <h1>
-          <FaUser /> Inscription
+          <FaUser /> تسجيل
         </h1>
-        <p>Veuillez créer un compte</p>
+        <p>يرجى إنشاء حساب</p>
       </section>
 
       <section className='form'>

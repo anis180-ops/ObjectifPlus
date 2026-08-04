@@ -39,9 +39,9 @@ function Dashboard() {
     <>
       <section className='heading'>
         <h1>
-          Bienvenue, {user && user.name}
+          مرحباً, {user && user.name}
         </h1>
-        <p>Tableau de bord des objectifs</p>
+        <p>لوحة معلومات الأهداف</p>
       </section>
 
       <GoalForm />
@@ -54,7 +54,7 @@ function Dashboard() {
             ))}
           </div>
         ) : (
-          <h3>Vous n'avez pas défini d'objectifs</h3>
+          <h3>تحديد الأهداف</h3>
         )}
       </section>
     </>
