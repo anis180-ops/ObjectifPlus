@@ -1,0 +1,65 @@
+services:
+  # --- BASE DE DONNÉES (MONGODB) ---
+  mongodb:
+    image: mongo:latest
+    container_name: objectifplus_db
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secretpassword
+    volumes:
+      - "C:\\temp\\ppfdata:/data/db"
+    healthcheck:
+      test: ["CMD", "mongosh", "--username", "admin", "--password", "secretpassword", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- INTERFACE DE GESTION (MONGO EXPRESS) ---
+  mongo-express:
+    image: mongo-express:latest
+    container_name: objectifplus_db_admin
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:secretpassword@mongodb:27017/
+      - ME_CONFIG_BASICAUTH_ENABLED=true
+      - ME_CONFIG_BASICAUTH_USERNAME=expressuser
+      - ME_CONFIG_BASICAUTH_PASSWORD=expresspassword
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  # --- BACKEND (API REST) ---
+  backend:
+    image: objectifplus_backend
+    container_name: objectifplus_api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - APP_ENV=production
+      - MONGO_URI=mongodb://admin:secretpassword@mongodb:27017/ObjectifPlusDB?authSource=admin
+      - JWT_SECRET=abc123456789
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  # --- FRONTEND (NGINX + REACT) ---
+  frontend:
+    image: objectifplus_frontend
+    container_name: objectifplus_web
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    # Le bloc "volumes" problématique a été supprimé d'ici.
+    # On applique le remplacement de "url:port" directement dans le fichier copié par le Dockerfile.
+    command: >
+      sh -c "sed -i 's|url:port|backend:5000|g' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    depends_on:
+      - backend

@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # --- BASE DE DONNÉES (MONGODB) ---
+  mongodb:
+    image: mongo:latest
+    container_name: objectifplus-db
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secretpassword
+    volumes:
+      # Montage du volume local demandé pour la persistance des données
+      - "C:\\temp\\ppfdata:/data/db"
+
+  # --- INTERFACE DE GESTION (MONGO EXPRESS) ---
+  mongo-express:
+    image: mongo-express:latest
+    container_name: objectifplus-db-admin
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:secretpassword@mongodb:27017/
+      - ME_CONFIG_BASICAUTH_ENABLED=true
+      - ME_CONFIG_BASICAUTH_USERNAME=expressuser
+      - ME_CONFIG_BASICAUTH_PASSWORD=expresspassword
+    depends_on:
+      - mongodb
+
+  # --- BACKEND (API REST) ---
+  backend:
+    image: objectifplus-backend:local
+    container_name: objectifplus-api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - APP_ENV=production
+      - MONGO_URI=mongodb://admin:secretpassword@mongodb:27017/ObjectifPlusDB?authSource=admin
+      - JWT_SECRET=abc123456789
+    depends_on:
+      - mongodb
+
+  # --- FRONTEND (NGINX + REACT) ---
+  frontend:
+    image: objectfplus-frontend:local
+    container_name: objectifplus-web
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
