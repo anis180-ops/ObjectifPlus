@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDS = credentials('dockerhub-creds')
+        DOCKERHUB_CREDS = credentials('dockerhub-id')
         KUBECONFIG = 'C:\\Users\\HP\\.kube\\config-k3s'
     }
 
